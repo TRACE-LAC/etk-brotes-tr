@@ -625,6 +625,8 @@ plot(Rt, legend = FALSE)
 
 ***
 
+**Interprete estos resultados: ¿qué opina del número de reproducción? ¿Qué refleja? 
+
 **¿Cómo interpretaría este resultado? ¿Cuál es la salvedad de esta representación?**
 
 **Respuesta:** El Rt nos permite observar que aunque se encontró en aumento 2.5 en las primeras semanas, aproximadamente, en mayo, el Rt empezó a disminuir, alcanzando un Rt cercano a 1, lo que puede estar dando cuenta de un control "adecuado" del brote.
