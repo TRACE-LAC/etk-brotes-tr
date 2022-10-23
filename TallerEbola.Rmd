@@ -1,7 +1,7 @@
 ---
 title:  "Análisis de brotes en tiempo real: el ébola como estudio de caso"
-author: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart","José M. Velasco-España", "Cándida Díaz-Brochero", "Zulma M. Cucunubá"]
-date: "2022-10-21"
+author: "Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart,José M. Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá"
+date: "2022-10-25"
 output: html_document
 
 #bibliography: biblim_org.bib
@@ -15,18 +15,18 @@ editor_options:
 
 ## Introducción
 
-Un nuevo brote de EVE en un país ficticio de África occidental
+Un nuevo brote de virus del Ébola (EVE) en un país ficticio de África occidental
 
 Objetivos:
 
 -Identificar los parámetros necesarios en casos de  transmisión de enfermedades infecciosas de persona a persona. 
 -Estimar e interpretar la tasa de crecimiento y el tiempo en que se duplica la epidemia.
 -Estimar el intervalo serial a partir de los datos pareados de individuos infectantes/ individuos infectados.
--Estimar e interpretar el número de reproducción instantáneo  de la epidemia
+-Estimar e interpretar el número de reproducción instantáneo de la epidemia
 -Estimar la probabilidad de letalidad (CFR)
 -Calcular y graficar la incidencia
 
-Conceptos básicos a desarrollar
+#### Conceptos básicos a desarrollar
 
 En esta práctica se desarrollarán los siguientes conceptos:
 
@@ -90,11 +90,13 @@ table(linelist_clean$outcome, useNA = "ifany")
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
+
 n_dead <- sum(linelist_clean$outcome %in% "Death")
 n_known_outcome <- sum(linelist_clean$outcome %in% c("Death", "Recover"))
 cfr <- n_dead / n_known_outcome
 cfr_with_CI <- binom.confint(n_dead, n_known_outcome, method = "exact")
 kable(cfr_with_CI, caption = "cfr_with_CI")
+
 ```
 #### Curvas de incidencia
 
@@ -203,6 +205,8 @@ doubling_time_days_CI <- log(2) / rev(daily_growth_rate_CI)
 doubling_time_days_CI
 ```
 
+### Rastreo de contactos
+
 
 #### Generacion de la red de rastreo de contactos: 
 
@@ -241,6 +245,7 @@ match(contacts$case_id, linelist_clean$case_id)
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 si_obs <- get_pairwise(epi_contacts, "date_of_onset")
 summary(si_obs)
+
 ```
 
 
@@ -270,7 +275,7 @@ hist(si_obs, xlab = "Días después de la aparición de los síntomas", ylab = "
 # points(0:60, si_fit$sd(0:60), col = "#9933ff", type = "l", lty = 2)
 ```
 
-#### Estimación de la transmisibilidad variable en el tiempo, R(t)
+## Estimación de la transmisibilidad variable en el tiempo, R(t)
 
 Cuando la suposición de que ($R$) es constante en el tiempo se vuelve insostenible, una alternativa es estimar la transmisibilidad variable en el tiempo utilizando el número de reproducción instantánea ($R_t$). Este enfoque, introducido por Cori et al. (2013),  se implementa en el paquete `EpiEstim.` Estima ($R_t$) para ventanas de tiempo personalizadas (el valor predeterminado es una sucesión de ventanas de tiempo deslizantes), utilizando la probabilidad de Poisson.  A continuación, estimamos la transmisibilidad para ventanas de tiempo deslizantes de 1 semana (el valor predeterminado de `estimate_R`):
 
