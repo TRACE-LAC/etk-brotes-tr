@@ -136,7 +136,7 @@ linelist_clean <- linelist[-mistakes, ]
 ***
 ***
 
-# Calculemos la tasa de letalidad (CFR)
+# Calculemos la probabilidad de muerte en los casos (CFR)
 
 Aquí está el número de casos por estado de resultado. **¿Cómo calcularía el CFR a partir de esto?**
 
@@ -157,7 +157,7 @@ Piense en qué hacer con los casos cuyo resultado es NA.
 
 ***
 
-Calculando la tasa de letalidad:
+Calculando la probabilidad de muerte en los casos:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 n_dead <- sum(linelist_clean$outcome %in% "Death")
@@ -624,6 +624,8 @@ plot(Rt, legend = FALSE)
 ```
 
 ***
+
+**Interprete estos resultados: ¿qué opina del número de reproducción? ¿Qué refleja? 
 
 **¿Cómo interpretaría este resultado? ¿Cuál es la salvedad de esta representación?**
 
