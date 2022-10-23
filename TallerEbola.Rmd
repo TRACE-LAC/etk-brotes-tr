@@ -320,8 +320,26 @@ saveRDS(si_fit, "data/si_fit.rds")
 Este documento ha sido una adaptación de los materiales originales disponibles en [RECON Learn](https://www.reconlearn.org/)
 
 #### Contribuciones
-Autores originales:Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart
-Cambios menores y adaptación a español: José M. Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá
+Autores originales:
+
+- Anne Cori
+
+- Natsuko Imai
+
+- Finlay Campbell
+
+- Zhian N. Kamvar
+
+- Thibaut Jombart
+
+
+Cambios menores y adaptación a español: 
+
+- José M. Velasco-España
+
+- Cándida Díaz-Brochero
+
+- Zulma M. Cucunubá
 
 
 
