@@ -1,10 +1,19 @@
 ---
 title:  "Análisis de brotes en tiempo real: el ébola como estudio de caso"
-authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart","José M. Velasco-España", "Cándida Díaz-Brochero", "Zulma M. Cucunubá"]
+author: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart","José M. Velasco-España", "Cándida Díaz-Brochero", "Zulma M. Cucunubá"]
 date: "2022-10-21"
 output: html_document
+
+#bibliography: biblim_org.bib
+#csl: apa.csl
+image: null
+licenses: CC-BY
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
+## Introducción
 
 Un nuevo brote de EVE en un país ficticio de África occidental
 
@@ -28,7 +37,7 @@ En esta práctica se desarrollarán los siguientes conceptos:
 - Tasa de crecimiento
 - Incidencia
 
-#Instalar y cargar los siguientes paquetes: 
+#### Cargue de librerías: 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 library(readxl)
@@ -48,7 +57,7 @@ library(knitr)
 ```
 
 
-#Cargar las bases de datos
+#### Cargue de bases de datos
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
@@ -57,7 +66,7 @@ contacts <- read_excel("data/contacts_20140701.xlsx", na = c("", "NA"))
 ```
 
 
-#Estructura de los datos
+#### Estructura de los datos
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 str(contacts)
@@ -73,7 +82,7 @@ head(linelist_clean)
 ```
 
 
-# Calcule la probabilidad de muerte en los casos (CFR)
+#### Probabilidad de muerte en los casos reportados (CFR)
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 table(linelist_clean$outcome, useNA = "ifany")
@@ -87,7 +96,7 @@ cfr <- n_dead / n_known_outcome
 cfr_with_CI <- binom.confint(n_dead, n_known_outcome, method = "exact")
 kable(cfr_with_CI, caption = "cfr_with_CI")
 ```
-#Curvas de incidencia
+#### Curvas de incidencia
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 i_daily <- incidence(linelist_clean$date_of_onset)
@@ -98,7 +107,7 @@ i_daily
 plot(i_daily, border = "black")
 ```
 
-#Calculo de la incidencia semanal `i_weekly`
+#### Cálculo de la incidencia semanal `i_weekly`
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 i_weekly <- incidence(linelist_clean$date_of_onset, interval = 7, 
@@ -110,9 +119,9 @@ plot(i_weekly, border = "black")
 ```
 
 
-# Estimación de la tasa de crecimiento mediante un modelo log-lineal
+#### Estimación de la tasa de crecimiento mediante un modelo log-lineal
 
-#Grafique la incidencia transformada logarítmicamente:
+Grafique la incidencia transformada logarítmicamente:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 ggplot(as.data.frame(i_weekly)) + 
@@ -122,7 +131,7 @@ ggplot(as.data.frame(i_weekly)) +
   ylab("log weekly incidence") + 
   theme_minimal()
 ```
-#Ajuste un modelo log-lineal a los datos de incidencia semanal
+#### Ajuste un modelo log-lineal a los datos de incidencia semanal
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 f <- incidence::fit(i_weekly)
@@ -132,15 +141,15 @@ plot(i_weekly, fit = f)
 ```
 
 
-### Encontrando una fecha límite adecuada para el modelo log-lineal, en función de los retrasos observados
+#### Encontrando una fecha límite adecuada para el modelo log-lineal, en función de los retrasos observados
 
-#Es posible que desee examinar cuánto tiempo después de la aparición de los síntomas los casos son hospitalizados
+Es posible que desee examinar cuánto tiempo después de la aparición de los síntomas los casos son hospitalizados
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 summary(as.numeric(linelist_clean$date_of_hospitalisation - linelist_clean$date_of_onset))
 ```
 
-# Semanas a descartar al final de la epicurva
+Semanas a descartar al final de la epicurva
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 
@@ -159,7 +168,7 @@ i_daily_trunc <- subset(i_daily,
                          to = max_date) # eliminamos las últimas dos semanas de datos
 ```
 
-#Vuelva a montar y a graficar el modelo logarítmico lineal, pero utilizando los datos truncados `i_weekly_trunc`. 
+Vuelva a montar y a graficar el modelo logarítmico lineal, pero utilizando los datos truncados `i_weekly_trunc`. 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 f <- incidence::fit(i_weekly_trunc)
@@ -167,12 +176,12 @@ f
 plot(i_weekly_trunc, fit = f)
 ```
 
-#Observe las estadísticas resumidas de su ajuste:
+Observe las estadísticas resumidas de su ajuste:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 summary(f$model)
 ```
-#Estimacion de la tasa de crecimiento 
+#### Estimacion de la tasa de crecimiento 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 daily_growth_rate <- f$model$coefficients['dates.x']
@@ -183,7 +192,7 @@ daily_growth_rate_CI <- confint(f$model, 'dates.x', level=0.95)
 daily_growth_rate_CI
 ```
 
-#Estimacion del tiempo de duplicacion
+#### Estimacion del tiempo de duplicacion
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 doubling_time_days <- log(2) / daily_growth_rate
@@ -195,9 +204,9 @@ doubling_time_days_CI
 ```
 
 
-# Generacion de la red de rastreo de contactos: 
+#### Generacion de la red de rastreo de contactos: 
 
-#Usando la función `make_epicontacts` en el paquete `epicontacts`, cree un nuevo objeto llamado `epi_contacts` . Asegúrese de comprobar los nombres de las columnas de los argumentos relevantes **“to”** y **“from”**.
+Usando la función `make_epicontacts` en el paquete `epicontacts`, cree un nuevo objeto llamado `epi_contacts` . Asegúrese de comprobar los nombres de las columnas de los argumentos relevantes **“to”** y **“from”**.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 epi_contacts <- make_epicontacts(linelist_clean, 
@@ -227,7 +236,7 @@ match(contacts$case_id, linelist_clean$case_id)
 
 ```
 
-#Estimación del intervalo serial (SI)
+#### Estimación del intervalo serial (SI)
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 si_obs <- get_pairwise(epi_contacts, "date_of_onset")
@@ -241,7 +250,7 @@ hist(si_obs, breaks = 0:30,
      main = "intervalo serial (distribución empírica)",
      col = "grey", border = "white")
 ```
-#Ajuste a distribucion gamma
+#### Ajuste a distribucion gamma
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 si_fit <- fit_disc_gamma(si_obs, w = 1)
@@ -260,7 +269,7 @@ hist(si_obs, xlab = "Días después de la aparición de los síntomas", ylab = "
 # points(0:60, si_fit$sd(0:60), col = "#9933ff", type = "l", lty = 2)
 ```
 
-# Estimación de la transmisibilidad variable en el tiempo
+#### Estimación de la transmisibilidad variable en el tiempo, R(t)
 
 Cuando la suposición de que ($R$) es constante en el tiempo se vuelve insostenible, una alternativa es estimar la transmisibilidad variable en el tiempo utilizando el número de reproducción instantánea ($R_t$). Este enfoque, introducido por Cori et al. (2013),  se implementa en el paquete `EpiEstim.` Estima ($R_t$) para ventanas de tiempo personalizadas (el valor predeterminado es una sucesión de ventanas de tiempo deslizantes), utilizando la probabilidad de Poisson.  A continuación, estimamos la transmisibilidad para ventanas de tiempo deslizantes de 1 semana (el valor predeterminado de `estimate_R`):
 
@@ -290,13 +299,13 @@ tail(Rt$R[, c("t_start", "t_end", "Median(R)",
 ```
 
 
-#Grafique la estimación de $R$ sobre le tiempo:
+Grafique la estimación de $R$ sobre le tiempo:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 plot(Rt, legend = FALSE)
 ```
 
-#Guardar salidas
+Guardar salidas
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
@@ -306,11 +315,11 @@ saveRDS(si_fit, "data/si_fit.rds")
 
 ***
 
-### Sobre este documento
+#### Sobre este documento
 
 Este documento ha sido una adaptación de los materiales originales disponibles en [RECON Learn](https://www.reconlearn.org/)
 
-### Contribuciones
+#### Contribuciones
 Autores originales:Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart
 Cambios menores y adaptación a español: José M. Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá
 
