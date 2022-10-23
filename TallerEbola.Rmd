@@ -250,6 +250,7 @@ hist(si_obs, breaks = 0:30,
      main = "intervalo serial (distribución empírica)",
      col = "grey", border = "white")
 ```
+
 #### Ajuste a distribucion gamma
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
