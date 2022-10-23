@@ -222,8 +222,9 @@ p
 
 Usando la función `match` ( ver` ? Match` ) verifique que los contactos visualizados sean realmente casos.
 
-```{r check_contact_cases, echo = params$full_version}
+```{r check_contact_cases}
 match(contacts$case_id, linelist_clean$case_id)
+
 ```
 
 #Estimación del intervalo serial (SI)
@@ -255,7 +256,7 @@ hist(si_obs, xlab = "Días después de la aparición de los síntomas", ylab = "
      50, ylim = c(0, 0.15), freq = FALSE, breaks = 0:35)
 
 # Por favor revisar aquí como sacar el fit porque no está funcionando. Gracias, Zulma.
-# points(0:60, si_fit$(0:60), col = "#9933ff", pch = 20)
+# points(0:60, si_fit$d(0:60), col = "#9933ff", pch = 20)
 # points(0:60, si_fit$sd(0:60), col = "#9933ff", type = "l", lty = 2)
 ```
 
@@ -308,5 +309,10 @@ saveRDS(si_fit, "data/si_fit.rds")
 ### Sobre este documento
 
 Este documento ha sido una adaptación de los materiales originales disponibles en [RECON Learn](https://www.reconlearn.org/)
+
+### Contribuciones
+Autores originales:Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart
+Cambios menores y adaptación a español: José M. Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá
+
 
 
