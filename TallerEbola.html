@@ -404,7 +404,7 @@ library(outbreaker2)
 library(tidyverse)
 library(knitr)</code></pre>
 <p>#Cargar las bases de datos</p>
-<pre class="r"><code>linelist_clean &lt;- readRDS(&quot;data/clean/linelist_clean.rds&quot;)
+<pre class="r"><code>linelist_clean &lt;- readRDS(&quot;data/linelist_clean.rds&quot;)
 contacts &lt;- read_excel(&quot;data/contacts_20140701.xlsx&quot;, na = c(&quot;&quot;, &quot;NA&quot;))</code></pre>
 <p>#Estructura de los datos</p>
 <pre class="r"><code>str(contacts)</code></pre>
@@ -791,6 +791,12 @@ saveRDS(si_fit, &quot;data/si_fit.rds&quot;)</code></pre>
 <h3>Sobre este documento</h3>
 <p>Este documento ha sido una adaptación de los materiales originales
 disponibles en <a href="https://www.reconlearn.org/">RECON Learn</a></p>
+</div>
+<div id="contribuciones" class="section level3">
+<h3>Contribuciones</h3>
+<p>Autores originales:Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N.
+Kamvar, Thibaut Jombart Cambios menores y adaptación a español: José M.
+Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá</p>
 </div>
 </div>
 

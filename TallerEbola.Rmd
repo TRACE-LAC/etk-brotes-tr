@@ -52,7 +52,7 @@ library(knitr)
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
-linelist_clean <- readRDS("data/clean/linelist_clean.rds")
+linelist_clean <- readRDS("data/linelist_clean.rds")
 contacts <- read_excel("data/contacts_20140701.xlsx", na = c("", "NA"))
 ```
 
