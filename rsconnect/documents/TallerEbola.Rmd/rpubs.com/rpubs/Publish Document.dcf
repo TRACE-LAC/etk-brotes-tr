@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/960676/27d5f265800445ffbe41abcb7edb6f79
+bundleId: https://api.rpubs.com/api/v1/document/960676/27d5f265800445ffbe41abcb7edb6f79
+url: http://rpubs.com/tracelac/960676/edit
+when: 1666574204.43053
+lastSyncTime: 1666574204.43053

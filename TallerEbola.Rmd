@@ -1,4 +1,4 @@
-
+---
 title:  "Análisis de brotes en tiempo real: el ébola como estudio de caso"
 author: "Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart,José M. Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá"
 date: "2022-10-25"
