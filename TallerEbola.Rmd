@@ -1,4 +1,4 @@
----
+
 title:  "Análisis de brotes en tiempo real: el ébola como estudio de caso"
 author: "Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart,José M. Velasco-España, Cándida Díaz-Brochero, Zulma M. Cucunubá"
 date: "2022-10-25"
@@ -57,6 +57,7 @@ library(knitr)
 ```
 
 
+
 #### Cargue de bases de datos
 
 
@@ -68,6 +69,7 @@ contacts <- read_excel("data/contacts_20140701.xlsx", na = c("", "NA"))
 
 #### Estructura de los datos
 
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 str(contacts)
 str(linelist_clean)
@@ -78,7 +80,6 @@ str(linelist_clean)
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 head(linelist_clean)
-
 ```
 
 
@@ -90,13 +91,11 @@ table(linelist_clean$outcome, useNA = "ifany")
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
-
 n_dead <- sum(linelist_clean$outcome %in% "Death")
 n_known_outcome <- sum(linelist_clean$outcome %in% c("Death", "Recover"))
 cfr <- n_dead / n_known_outcome
 cfr_with_CI <- binom.confint(n_dead, n_known_outcome, method = "exact")
 kable(cfr_with_CI, caption = "cfr_with_CI")
-
 ```
 #### Curvas de incidencia
 
@@ -114,9 +113,7 @@ plot(i_daily, border = "black")
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 i_weekly <- incidence(linelist_clean$date_of_onset, interval = 7, 
                       last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
-
 i_weekly
-
 plot(i_weekly, border = "black")
 ```
 
@@ -138,7 +135,6 @@ ggplot(as.data.frame(i_weekly)) +
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 f <- incidence::fit(i_weekly)
 f
-
 plot(i_weekly, fit = f)
 ```
 
@@ -154,12 +150,9 @@ summary(as.numeric(linelist_clean$date_of_hospitalisation - linelist_clean$date_
 Semanas a descartar al final de la epicurva
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
-
 n_weeks_to_discard <- 2
-
 min_date <- min(i_daily$dates)
 max_date <- max(i_daily$dates) - n_weeks_to_discard * 7
-
 # Para truncar la incidencia semanal 
 i_weekly_trunc <- subset(i_weekly, 
                          from = min_date, 
@@ -188,7 +181,6 @@ summary(f$model)
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 daily_growth_rate <- f$model$coefficients['dates.x']
 daily_growth_rate
-
 # intervalo de confianza:
 daily_growth_rate_CI <- confint(f$model, 'dates.x', level=0.95)
 daily_growth_rate_CI
@@ -199,7 +191,6 @@ daily_growth_rate_CI
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 doubling_time_days <- log(2) / daily_growth_rate
 doubling_time_days 
-
 # intervalo de confianza:
 doubling_time_days_CI <- log(2) / rev(daily_growth_rate_CI)
 doubling_time_days_CI
@@ -218,7 +209,6 @@ epi_contacts <- make_epicontacts(linelist_clean,
                                  id = "case_id",
                                  from = "infector",
                                  to = "case_id")
-
 epi_contacts
 ```
 
@@ -237,7 +227,6 @@ Usando la función `match` ( ver` ? Match` ) verifique que los contactos visuali
 
 ```{r check_contact_cases}
 match(contacts$case_id, linelist_clean$case_id)
-
 ```
 
 #### Estimación del intervalo serial (SI)
@@ -245,7 +234,6 @@ match(contacts$case_id, linelist_clean$case_id)
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
 si_obs <- get_pairwise(epi_contacts, "date_of_onset")
 summary(si_obs)
-
 ```
 
 
@@ -265,15 +253,19 @@ si_fit
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
-#comparacion de la distribucion ajustada
+si <- si_fit$distribution
+si
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
+## compare fitted distribution
 hist(si_obs, xlab = "Días después de la aparición de los síntomas", ylab = "Frecuencia",
      main = "intervalo serial: ajustar a los datos", col = "salmon", border = "white",
      50, ylim = c(0, 0.15), freq = FALSE, breaks = 0:35)
-
-# Por favor revisar aquí como sacar el fit porque no está funcionando. Gracias, Zulma.
-# points(0:60, si_fit$d(0:60), col = "#9933ff", pch = 20)
-# points(0:60, si_fit$sd(0:60), col = "#9933ff", type = "l", lty = 2)
+points(0:60, si$d(0:60), col = "#9933ff", pch = 20)
+points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
 ```
+
 
 ## Estimación de la transmisibilidad variable en el tiempo, R(t)
 
