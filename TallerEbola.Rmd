@@ -75,14 +75,6 @@ str(contacts)
 str(linelist_clean)
 ```
 
-
-#Mire más de cerca los datos contenidos en este `linelist`.
-
-```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
-head(linelist_clean)
-```
-
-
 #### Probabilidad de muerte en los casos reportados (CFR)
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
