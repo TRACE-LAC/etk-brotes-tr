@@ -122,6 +122,7 @@ ggplot(as.data.frame(i_weekly)) +
   ylab("log weekly incidence") + 
   theme_minimal()
 ```
+  
 #### Ajuste un modelo log-lineal a los datos de incidencia semanal
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE,comment=""}
